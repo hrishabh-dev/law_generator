@@ -13,7 +13,7 @@ const GenerateAnswerInputSchema = z.object({
 export type GenerateAnswerInput = z.infer<typeof GenerateAnswerInputSchema>;
 
 const GenerateAnswerOutputSchema = z.object({
-  answer: z.string().describe('The AI generated answer to the question, formatted in numbered points, each on a new line.'),
+  answer: z.string().describe('The AI generated answer to the question, formatted in points, each on a new line.'),
 });
 export type GenerateAnswerOutput = z.infer<typeof GenerateAnswerOutputSchema>;
 
@@ -31,10 +31,10 @@ const prompt = ai.definePrompt({
   },
   output: {
     schema: z.object({
-      answer: z.string().describe('The AI generated answer to the question, formatted in numbered points, each on a new line.'),
+      answer: z.string().describe('The AI generated answer to the question, formatted in points, each on a new line.'),
     }),
   },
-  prompt: `You are an expert in CA Inter Law. Please provide a comprehensive answer to the following question. Format the answer as a numbered list.
+  prompt: `You are an expert in CA Inter Law. Please provide a comprehensive answer to the following question. Format the answer as a list of points.
 
 Question: {{{question}}}
 

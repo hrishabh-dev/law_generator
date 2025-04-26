@@ -15,6 +15,8 @@ export default function Home() {
   const [answer, setAnswer] = useState<string | null>(null);
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [yesNo, setYesNo] = useState<string | null>(null);
+  const [introText, setIntroText] = useState("");
 
   const handleQuestionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -37,12 +39,27 @@ export default function Home() {
 
     setLoading(true);
     setAnswer(null);
+    setYesNo(null);
+    setIntroText("");
 
     try {
       const result = await generateAnswer({ question: question, context: context });
 
       if (result && result.answer) {
-        setAnswer(result.answer);
+        // Detect "Yes" or "No" at the beginning of the answer
+        let rawAnswer = result.answer;
+        const yesNoMatch = rawAnswer.match(/^(Yes|No)[\.,]?\s*/i);
+
+        if (yesNoMatch) {
+          setYesNo(yesNoMatch[1]);
+          // Remove "Yes" or "No" (and any following comma) from the raw answer
+          rawAnswer = rawAnswer.substring(yesNoMatch[0].length).trim();
+        } else {
+          setYesNo(null);
+        }
+
+        setAnswer(rawAnswer);
+
         toast({
           title: "Success",
           description: "Answer generated successfully.",
@@ -119,6 +136,7 @@ export default function Home() {
               <h2 className="text-lg font-semibold">Answer</h2>
             </CardHeader>
             <CardContent>
+              {yesNo && <p><strong>{yesNo}</strong></p>}
               <ol className="list-decimal pl-5">
                 {answer.split('\n').map((point, index) => (
                   <li key={index}>{point}</li>
@@ -129,8 +147,7 @@ export default function Home() {
         )}
       </div>
       <p className="mt-8 text-muted-foreground">
-        For any query contact me:{" "}
-        <a href="mailto:hrishabh068@gmail.com">hrishabh068@gmail.com</a>
+        For any query contact me: <a href="mailto:hrishabh068@gmail.com">hrishabh068@gmail.com</a>
       </p>
     </div>
   );
