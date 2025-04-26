@@ -42,7 +42,9 @@ export default function Home() {
       const result = await generateAnswer({ question: question, context: context });
 
       if (result && result.answer) {
-        setAnswer(result.answer);
+        // Split the answer into lines and filter out empty lines
+        const answerPoints = result.answer.split('\n').filter(line => line.trim() !== '');
+        setAnswer(answerPoints.join('\n')); // Join with newline for display
         toast({
           title: "Success",
           description: "Answer generated successfully.",
@@ -120,9 +122,20 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <ol className="list-decimal pl-5">
-                {answer.split('\n').map((point, index) => (
-                  <li key={index}>{point}</li>
-                ))}
+                {answer.split('\n').map((point, index) => {
+                  // Extract the point number
+                  const pointNumberMatch = point.match(/^(\d+)\s*[-.]\s*/);
+                  const pointNumber = pointNumberMatch ? pointNumberMatch[1] : null;
+
+                  // Extract the description, removing the number prefix
+                  const description = pointNumberMatch ? point.substring(pointNumberMatch[0].length).trim() : point.trim();
+
+                  return (
+                    <li key={index}>
+                      {description}
+                    </li>
+                  );
+                })}
               </ol>
             </CardContent>
           </Card>
