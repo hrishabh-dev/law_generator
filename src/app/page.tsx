@@ -13,7 +13,6 @@ import {
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -23,7 +22,9 @@ export default function Home() {
   const [question, setQuestion] = useState("");
   const [context, setContext] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
-    const { toast } = useToast();
+  const { toast } = useToast();
+
+  const [introText, setIntroText] = useState<string | null>(null);
 
   const handleQuestionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -46,19 +47,36 @@ export default function Home() {
 
     try {
       const result = await generateAnswer({ question: question, context: context });
-      setAnswer(result?.answer || "No answer available.");
-        toast({
-          title: "Success",
-          description: "Answer generated successfully.",
-        });
+      const rawAnswer = result?.answer || "No answer available.";
+
+      // Extract intro text (everything before the numbered points)
+      const lines = rawAnswer.split('\n');
+      let extractedIntroText = '';
+      const answerPoints: string[] = [];
+
+      for (const line of lines) {
+        if (line.match(/^\d+\s*-\s*/)) { // Check if line starts with a number and a dash
+          answerPoints.push(line);
+        } else {
+          extractedIntroText += line + '\n';
+        }
+      }
+
+      setIntroText(extractedIntroText.trim());
+      setAnswer(answerPoints.join('\n'));
+
+      toast({
+        title: "Success",
+        description: "Answer generated successfully.",
+      });
     } catch (error: any) {
       console.error("Error generating answer:", error);
       setAnswer("Error generating answer. Please try again.");
-        toast({
-          title: "Error",
-          description:
-            error?.message || "Failed to generate answer. Please try again.",
-        });
+      toast({
+        title: "Error",
+        description:
+          error?.message || "Failed to generate answer. Please try again.",
+      });
     }
   };
 
@@ -112,6 +130,7 @@ export default function Home() {
               <h2 className="text-lg font-semibold">Answer</h2>
             </CardHeader>
             <CardContent>
+              {introText && <p className="mb-4">{introText}</p>}
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -120,21 +139,27 @@ export default function Home() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {answerPoints.map((point, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium">{index + 1}</TableCell>
-                      <TableCell>{point}</TableCell>
-                    </TableRow>
-                  ))}
+                  {answerPoints.map((point, index) => {
+                    const parts = point.split(/(\d+\s*-\s*)/).filter(Boolean);
+                    const pointNumber = parts[1] ? parts[1].trim() : '';
+                    const description = parts[2] ? parts[2].trim() : '';
+
+                    return (
+                      <TableRow key={index}>
+                        <TableCell className="font-medium">{pointNumber}</TableCell>
+                        <TableCell>{description}</TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </CardContent>
           </Card>
         )}
       </div>
-        <p className="mt-8 text-muted-foreground">
-          For any query contact me: <a href="mailto:hrishabh068@gmail.com">hrishabh068@gmail.com</a>
-        </p>
+      <p className="mt-8 text-muted-foreground">
+        For any query contact me: <a href="mailto:hrishabh068@gmail.com">hrishabh068@gmail.com</a>
+      </p>
     </div>
   );
 }
