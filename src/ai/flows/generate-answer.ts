@@ -34,7 +34,7 @@ const prompt = ai.definePrompt({
       answer: z.string().describe('The AI generated answer to the question, formatted with HTML bold tags for headings and line breaks between points.'),
     }),
   },
-  prompt: `You are an expert in CA Inter Law. Please provide a comprehensive answer to the following question in a clear and structured manner. Format the answer as a series of points, each on a new line.  Use HTML &lt;b&gt;bold&lt;/b&gt; tags for headings and subheadings within each point. Each point should be on a new line.
+  prompt: `You are an expert in CA Inter Law. Please provide a comprehensive answer to the following question in a clear and structured manner, formatted for a webpage. Provide response in bullet points format. Directly include the HTML <b> tag for bold text and <br> tag for line breaks within your response. Ensure each point starts on a new line and each heading is bold and after heading there should be a <br> tag.
 
 Question: {{{question}}}
 
