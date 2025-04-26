@@ -106,7 +106,7 @@ export default function Home() {
         )}
       </div>
         <p className="mt-8 text-muted-foreground">
-          Contact: <a href="mailto:hrishabh068@gmail.com">hrishabh068@gmail.com</a>
+          For any query contact me: <a href="mailto:hrishabh068@gmail.com">hrishabh068@gmail.com</a>
         </p>
     </div>
   );
