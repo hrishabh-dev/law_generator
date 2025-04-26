@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { generateAnswer } from "@/ai/flows/generate-answer";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";

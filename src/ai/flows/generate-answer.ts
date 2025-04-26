@@ -34,7 +34,7 @@ const prompt = ai.definePrompt({
       answer: z.string().describe('The AI generated answer to the question, formatted in numbered points, each on a new line.'),
     }),
   },
-  prompt: `You are an expert in CA Inter Law. Please provide a comprehensive answer to the following question. Format the answer as a numbered list.  Each point should be very concise.
+  prompt: `You are an expert in CA Inter Law. Please provide a comprehensive answer to the following question. Format the answer as a numbered list.
 
 Question: {{{question}}}
 
@@ -55,7 +55,5 @@ const generateAnswerFlow = ai.defineFlow<
   outputSchema: GenerateAnswerOutputSchema,
 }, async input => {
   const {output} = await prompt(input);
-  const points = output!.answer.split('\n').filter(point => point.trim() !== '');
-  const formattedAnswer = points.map((point, index) => `${index + 1}. ${point.trim()}`).join('\n');
-  return {answer: formattedAnswer};
+  return output!;
 });
