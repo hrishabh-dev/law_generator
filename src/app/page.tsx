@@ -51,20 +51,20 @@ export default function Home() {
       const rawAnswer = result?.answer || "No answer available.";
 
       try {
-        // Attempt to parse the raw answer as JSON
         let parsedAnswer;
         try {
           parsedAnswer = JSON.parse(rawAnswer);
         } catch (parseError) {
-          // If it's not a JSON, consider the entire rawAnswer as a single description.
-          console.log("Raw answer:", rawAnswer);
+          console.error("Error parsing JSON answer:", parseError);
+          // If it's not a JSON, handle it as plain text
           parsedAnswer = {
             introText: rawAnswer,
             points: [],
             descriptions: [],
           };
         }
-        setIntroText(parsedAnswer?.introText || '');
+
+        setIntroText(parsedAnswer?.introText || "");
 
         // Ensure points and descriptions are arrays before mapping
         const points = Array.isArray(parsedAnswer?.points) ? parsedAnswer?.points : [];
@@ -73,7 +73,7 @@ export default function Home() {
         // Combine points and descriptions into answerPoints array
         const combinedAnswerPoints = points.map((point, index) => ({
           point: String(index + 1),
-          description: descriptions[index] || 'No description available.',
+          description: descriptions[index] || "No description available.",
         }));
 
         setAnswerPoints(combinedAnswerPoints);
