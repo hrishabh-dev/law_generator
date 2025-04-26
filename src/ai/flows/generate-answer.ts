@@ -48,7 +48,7 @@ const prompt = ai.definePrompt({
 
 1.  **Introductory Text**: Start with an engaging introduction to the answer, setting the context or background. This part should not be numbered and should be displayed above the table.
 
-2.  **Key Points**: Identify and extract only the key points related to the question.
+2.  **Key Points**: Extract only the key points related to the question.
 
 3.  **Descriptions**: Provide a detailed description for each key point.
 
@@ -59,12 +59,13 @@ Context: {{{context}}}
 {{~/if}}
 
 Answer:
+\`\`\`json
 {
   "introText": "<introductory_text>",
   "points": ["1", "2", "3", ...],
   "descriptions": ["description_for_point_1", "description_for_point_2", "description_for_point_3", ...]
 }
-`,
+\`\`\``,
 });
 
 const generateAnswerFlow = ai.defineFlow<
@@ -78,4 +79,3 @@ const generateAnswerFlow = ai.defineFlow<
   const {output} = await prompt(input);
   return output!;
 });
-
