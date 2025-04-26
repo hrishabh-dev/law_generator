@@ -1,10 +1,6 @@
 'use server';
 /**
  * @fileOverview An AI agent that answers CA Inter Law questions.
- *
- * - generateAnswer - A function that handles the question answering process.
- * - GenerateAnswerInput - The input type for the generateAnswer function.
- * - GenerateAnswerOutput - The return type for the generateAnswer function.
  */
 
 import {ai} from '@/ai/ai-instance';
@@ -17,7 +13,7 @@ const GenerateAnswerInputSchema = z.object({
 export type GenerateAnswerInput = z.infer<typeof GenerateAnswerInputSchema>;
 
 const GenerateAnswerOutputSchema = z.object({
-  answer: z.string().describe('The AI generated answer to the question.'),
+  answer: z.string().describe('The AI generated answer to the question, formatted in numbered points.'),
 });
 export type GenerateAnswerOutput = z.infer<typeof GenerateAnswerOutputSchema>;
 
@@ -35,16 +31,10 @@ const prompt = ai.definePrompt({
   },
   output: {
     schema: z.object({
-      answer: z.string().describe('The AI generated answer to the question.'),
+      answer: z.string().describe('The AI generated answer to the question, formatted in numbered points.'),
     }),
   },
-  prompt: `You are an expert in CA Inter Law. Please provide a comprehensive answer to the following question.  Structure your response as follows:
-
-Begin with an introductory paragraph that provides context.
-
-Present the answer as a series of numbered points, each detailing a specific aspect of the answer.
-
-Conclude with a summary paragraph that ties the points together.
+  prompt: `You are an expert in CA Inter Law. Please provide a comprehensive answer to the following question. Format the answer as a numbered list, with each point on a new line. If the question implies a "Yes" or "No" answer, start with that before the numbered list.
 
 Question: {{{question}}}
 
