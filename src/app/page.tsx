@@ -146,7 +146,7 @@ export default function Home() {
 
                     return (
                       <TableRow key={index}>
-                        <TableCell className="font-medium">{pointNumber}</TableCell>
+                        <TableCell className="font-medium">{index + 1}</TableCell>
                         <TableCell>{description}</TableCell>
                       </TableRow>
                     );
