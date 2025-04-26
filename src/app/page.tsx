@@ -53,7 +53,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2 deep-blue-theme">
+    <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <Toaster />
       <h1 className="text-4xl font-bold mb-4 text-primary">Law Ace AI</h1>
       <p className="text-muted-foreground mb-8">
@@ -111,3 +111,4 @@ export default function Home() {
     </div>
   );
 }
+

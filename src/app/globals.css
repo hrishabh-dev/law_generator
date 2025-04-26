@@ -43,18 +43,6 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
-  .deep-blue-theme {
-    --background: 218 55% 12%; /* Deep blue */
-    --foreground: 240 5.3% 98%;
-    --primary: 180 100% 25%; /* Teal */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 5.3% 26.1%;
-    --secondary-foreground: 0 0% 98%;
-    --accent: 180 100% 25%;
-    --accent-foreground: 0 0% 100%;
-  }
-
-
   .dark {
     --background: 225 25% 4%;
     --foreground: 225 25% 96%;
@@ -99,3 +87,4 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
