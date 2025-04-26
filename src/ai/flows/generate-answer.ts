@@ -18,9 +18,6 @@ export type GenerateAnswerInput = z.infer<typeof GenerateAnswerInputSchema>;
 
 const GenerateAnswerOutputSchema = z.object({
   answer: z.string().describe('The AI generated answer to the question.'),
-  introText: z.string().optional().describe('Introductory text to the answer.'),
-  points: z.array(z.string()).optional().describe('Key points related to the question.'),
-  descriptions: z.array(z.string()).optional().describe('Descriptions for each key point.'),
 });
 export type GenerateAnswerOutput = z.infer<typeof GenerateAnswerOutputSchema>;
 
@@ -39,18 +36,9 @@ const prompt = ai.definePrompt({
   output: {
     schema: z.object({
       answer: z.string().describe('The AI generated answer to the question.'),
-      introText: z.string().optional().describe('Introductory text to the answer.'),
-      points: z.array(z.string()).optional().describe('Key points related to the question.'),
-      descriptions: z.array(z.string()).optional().describe('Descriptions for each key point.'),
     }),
   },
-  prompt: `You are an expert in CA Inter Law. Please provide a clear and concise answer to the following question. Structure your response into an engaging introduction, key points, and detailed descriptions for each point. Your response must contain the following:
-
-1.  **Introductory Text**: Start with an engaging introduction to the answer, setting the context or background. This part should not be numbered and should be displayed above the table.
-
-2.  **Key Points**: Extract only the key points related to the question.
-
-3.  **Descriptions**: Provide a detailed description for each key point.
+  prompt: `You are an expert in CA Inter Law. Please provide a clear and concise answer to the following question. 
 
 Question: {{{question}}}
 
@@ -58,14 +46,7 @@ Question: {{{question}}}
 Context: {{{context}}}
 {{~/if}}
 
-Answer:
-\`\`\`json
-{
-  "introText": "<introductory_text>",
-  "points": ["1", "2", "3", ...],
-  "descriptions": ["description_for_point_1", "description_for_point_2", "description_for_point_3", ...]
-}
-\`\`\``,
+Answer:`,
 });
 
 const generateAnswerFlow = ai.defineFlow<
@@ -79,3 +60,4 @@ const generateAnswerFlow = ai.defineFlow<
   const {output} = await prompt(input);
   return output!;
 });
+

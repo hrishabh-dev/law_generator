@@ -8,24 +8,12 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 export default function Home() {
   const [question, setQuestion] = useState("");
   const [context, setContext] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
   const { toast } = useToast();
-  const [introText, setIntroText] = useState<string | null>(null);
-  const [answerPoints, setAnswerPoints] = useState<
-    { point: string; description: string }[]
-  >([]);
 
   const handleQuestionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -48,42 +36,7 @@ export default function Home() {
 
     try {
       const result = await generateAnswer({ question: question, context: context });
-      const rawAnswer = result?.answer || "No answer available.";
-
-      try {
-        let parsedAnswer;
-        try {
-          parsedAnswer = JSON.parse(rawAnswer);
-        } catch (parseError) {
-          console.error("Error parsing JSON answer:", parseError);
-          // If it's not a JSON, handle it as plain text
-          parsedAnswer = {
-            introText: rawAnswer,
-            points: [],
-            descriptions: [],
-          };
-        }
-
-        setIntroText(parsedAnswer?.introText || "");
-
-        // Ensure points and descriptions are arrays before mapping
-        const points = Array.isArray(parsedAnswer?.points) ? parsedAnswer?.points : [];
-        const descriptions = Array.isArray(parsedAnswer?.descriptions) ? parsedAnswer?.descriptions : [];
-
-        // Combine points and descriptions into answerPoints array
-        const combinedAnswerPoints = points.map((point, index) => ({
-          point: String(index + 1),
-          description: descriptions[index] || "No description available.",
-        }));
-
-        setAnswerPoints(combinedAnswerPoints);
-        setAnswer(rawAnswer); // Keep raw answer for debugging/future use
-      } catch (parseError) {
-        console.error("Error parsing JSON answer:", parseError);
-        setIntroText("Error parsing answer.");
-        setAnswerPoints([]);
-        setAnswer("Error parsing JSON answer.");
-      }
+      setAnswer(result?.answer || "No answer available.");
 
       toast({
         title: "Success",
@@ -148,23 +101,7 @@ export default function Home() {
               <h2 className="text-lg font-semibold">Answer</h2>
             </CardHeader>
             <CardContent>
-              {introText && <p className="mb-4">{introText}</p>}
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[50px]">Point</TableHead>
-                    <TableHead>Description</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {answerPoints.map((item, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium">{item.point}</TableCell>
-                      <TableCell>{item.description}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <p className="mb-4">{answer}</p>
             </CardContent>
           </Card>
         )}
@@ -175,3 +112,4 @@ export default function Home() {
     </div>
   );
 }
+
