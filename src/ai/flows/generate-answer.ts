@@ -43,7 +43,7 @@ Context: {{{context}}}
 {{~/if}}
 
 Answer:
-1. `,
+`,
 });
 
 const generateAnswerFlow = ai.defineFlow<
@@ -55,5 +55,5 @@ const generateAnswerFlow = ai.defineFlow<
   outputSchema: GenerateAnswerOutputSchema,
 }, async input => {
   const {output} = await prompt(input);
-  return '1. ' + output!.answer;
+  return {answer: output!.answer};
 });
