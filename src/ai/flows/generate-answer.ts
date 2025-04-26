@@ -47,10 +47,10 @@ const prompt = ai.definePrompt({
   prompt: `You are an expert in CA Inter Law. Please provide a clear and concise answer to the following question. Structure your response into an engaging introduction, key points, and detailed descriptions for each point. Your response must contain the following:
 
 1.  **Introductory Text**: Start with an engaging introduction to the answer, setting the context or background. This part should not be numbered and should be displayed above the table.
-2.  **Key Points**: Identify and extract the key points related to the question.
-3.  **Descriptions**: Provide a detailed description for each key point.
 
-The key points and descriptions will be presented in a table.
+2.  **Key Points**: Identify and extract only the key points related to the question.
+
+3.  **Descriptions**: Provide a detailed description for each key point.
 
 Question: {{{question}}}
 
@@ -78,3 +78,4 @@ const generateAnswerFlow = ai.defineFlow<
   const {output} = await prompt(input);
   return output!;
 });
+

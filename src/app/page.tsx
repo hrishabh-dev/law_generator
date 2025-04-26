@@ -148,7 +148,7 @@ export default function Home() {
                 <TableBody>
                   {answerPoints.map((item, index) => (
                     <TableRow key={index}>
-                      <TableCell className="font-medium">{item.point}</TableCell>
+                      <TableCell className="font-medium">{index + 1}</TableCell>
                       <TableCell>{item.description}</TableCell>
                     </TableRow>
                   ))}
@@ -164,3 +164,4 @@ export default function Home() {
     </div>
   );
 }
+
