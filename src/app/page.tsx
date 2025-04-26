@@ -8,6 +8,16 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function Home() {
   const [question, setQuestion] = useState("");
@@ -51,6 +61,8 @@ export default function Home() {
         });
     }
   };
+
+  const answerPoints = answer ? answer.split('\n') : [];
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
@@ -100,7 +112,22 @@ export default function Home() {
               <h2 className="text-lg font-semibold">Answer</h2>
             </CardHeader>
             <CardContent>
-              <p>{answer}</p>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[50px]">Point</TableHead>
+                    <TableHead>Description</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {answerPoints.map((point, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">{index + 1}</TableCell>
+                      <TableCell>{point}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         )}
@@ -111,4 +138,3 @@ export default function Home() {
     </div>
   );
 }
-
