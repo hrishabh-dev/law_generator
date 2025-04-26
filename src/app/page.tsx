@@ -36,12 +36,21 @@ export default function Home() {
 
     try {
       const result = await generateAnswer({ question: question, context: context });
-      setAnswer(result?.answer || "No answer available.");
 
-      toast({
-        title: "Success",
-        description: "Answer generated successfully.",
-      });
+      // Null check for result
+      if (result && result.answer) {
+        setAnswer(result.answer);
+        toast({
+          title: "Success",
+          description: "Answer generated successfully.",
+        });
+      } else {
+        setAnswer("No answer available.");
+        toast({
+          title: "Information",
+          description: "No answer was generated.",
+        });
+      }
     } catch (error: any) {
       console.error("Error generating answer:", error);
       setAnswer("Error generating answer. Please try again.");
@@ -51,6 +60,18 @@ export default function Home() {
           error?.message || "Failed to generate answer. Please try again.",
       });
     }
+  };
+
+  // Function to format the answer with line breaks
+  const formatAnswer = (answer: string | null) => {
+    if (!answer) return "";
+    // Split the answer by newline characters to preserve formatting
+    return answer.split('\n').map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        <br />
+      </React.Fragment>
+    ));
   };
 
   return (
@@ -101,7 +122,7 @@ export default function Home() {
               <h2 className="text-lg font-semibold">Answer</h2>
             </CardHeader>
             <CardContent>
-              <p className="mb-4">{answer}</p>
+              <p className="mb-4">{formatAnswer(answer)}</p>
             </CardContent>
           </Card>
         )}
@@ -112,4 +133,3 @@ export default function Home() {
     </div>
   );
 }
-
