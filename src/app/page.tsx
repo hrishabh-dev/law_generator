@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { generateAnswer } from "@/ai/flows/generate-answer";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -23,8 +23,10 @@ export default function Home() {
   const [context, setContext] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
   const { toast } = useToast();
-
   const [introText, setIntroText] = useState<string | null>(null);
+  const [answerPoints, setAnswerPoints] = useState<
+    { point: string; description: string }[]
+  >([]);
 
   const handleQuestionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -49,21 +51,29 @@ export default function Home() {
       const result = await generateAnswer({ question: question, context: context });
       const rawAnswer = result?.answer || "No answer available.";
 
-      // Extract intro text (everything before the numbered points)
+      // Splitting the raw answer into intro text and answer points
       const lines = rawAnswer.split('\n');
       let extractedIntroText = '';
-      const answerPoints: string[] = [];
+      const extractedAnswerPoints: { point: string; description: string }[] = [];
 
+      let inIntro = true;
       for (const line of lines) {
-        if (line.match(/^\d+\s*-\s*/)) { // Check if line starts with a number and a dash
-          answerPoints.push(line);
-        } else {
-          extractedIntroText += line + '\n';
-        }
+          if (line.startsWith('Point:')) {
+              inIntro = false;
+              const pointNumber = line.split(':')[1]?.trim() || '';
+              const descriptionLine = lines[lines.indexOf(line) + 1];
+              if (descriptionLine && descriptionLine.startsWith('Description:')) {
+                  const description = descriptionLine.split(':')[1]?.trim() || '';
+                  extractedAnswerPoints.push({ point: pointNumber, description: description });
+              }
+          } else if (inIntro) {
+              extractedIntroText += line + '\n';
+          }
       }
 
       setIntroText(extractedIntroText.trim());
-      setAnswer(answerPoints.join('\n'));
+      setAnswerPoints(extractedAnswerPoints);
+      setAnswer(rawAnswer); // Keep raw answer for debugging/future use
 
       toast({
         title: "Success",
@@ -79,8 +89,6 @@ export default function Home() {
       });
     }
   };
-
-  const answerPoints = answer ? answer.split('\n') : [];
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
@@ -139,18 +147,12 @@ export default function Home() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {answerPoints.map((point, index) => {
-                    const parts = point.split(/(\d+\s*-\s*)/).filter(Boolean);
-                    const pointNumber = parts[1] ? parts[1].trim() : '';
-                    const description = parts[2] ? parts[2].trim() : '';
-
-                    return (
-                      <TableRow key={index}>
-                        <TableCell className="font-medium">{index + 1}</TableCell>
-                        <TableCell>{description}</TableCell>
-                      </TableRow>
-                    );
-                  })}
+                  {answerPoints.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">{item.point}</TableCell>
+                      <TableCell>{item.description}</TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </CardContent>

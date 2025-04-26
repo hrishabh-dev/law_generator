@@ -1,4 +1,3 @@
-// src/ai/flows/generate-answer.ts
 'use server';
 /**
  * @fileOverview An AI agent that answers CA Inter Law questions.
@@ -39,11 +38,11 @@ const prompt = ai.definePrompt({
       answer: z.string().describe('The AI generated answer to the question.'),
     }),
   },
-  prompt: `You are an expert in CA Inter Law. Please answer the following question clearly and concisely, presenting the information in a human-like way.
+  prompt: `You are an expert in CA Inter Law. Please answer the following question clearly and concisely, presenting the information in a human-like way. Structure your response to extract introductory text and key points separately, suitable for display above and within a table, respectively.
 
-Give a detailed answer, broken down into easily understandable points. Each point should be on a new line, formatted with a numbered index (e.g., "1 - [Point 1]").
-After the number and dash, include a space before the answer. Ensure that each point is placed on a new line for better readability.
-Craft your response in a human-like manner, as if you were explaining the concepts to a student.
+First, provide an engaging introduction to the answer, setting the context or background. This part should not be numbered.
+
+Then, identify and extract the key points related to the question. Present each point as a numbered item suitable for a table, in the format "Point: [point_number]" and "Description: [point_description]". Ensure that each key point is concise and can be displayed in a tabular format.
 
 Question: {{{question}}}
 
