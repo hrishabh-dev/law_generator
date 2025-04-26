@@ -41,7 +41,8 @@ const prompt = ai.definePrompt({
   },
   prompt: `You are an expert in CA Inter Law. Please answer the following question clearly and concisely, presenting the information in a human-like way.
 
-Give a detailed answer, broken down into easily understandable points. Each point should be on a new line, formatted with a numbered index (e.g., "1. [Point 1]").
+Give a detailed answer, broken down into easily understandable points. Each point should be on a new line, formatted with a numbered index (e.g., "1 - [Point 1]").
+After the number and dash, include a space before the answer.
 
 Question: {{{question}}}
 
