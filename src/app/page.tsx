@@ -8,6 +8,7 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 export default function Home() {
   const [question, setQuestion] = useState("");
@@ -16,6 +17,9 @@ export default function Home() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [yesNo, setYesNo] = useState<string | null>(null);
+  const [introText, setIntroText] = useState<string>('');
+  const [points, setPoints] = useState<string[]>([]);
+
 
   const handleQuestionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -36,8 +40,11 @@ export default function Home() {
       return;
     }
 
-    setLoading(true); // Set loading state to true
-    setAnswer(null); // Clear previous answer
+    setLoading(true);
+    setAnswer(null);
+    setYesNo(null);
+    setIntroText('');
+    setPoints([]);
 
     try {
       const result = await generateAnswer({ question: question, context: context });
@@ -47,14 +54,18 @@ export default function Home() {
 
         // Extract "Yes" or "No" from the beginning of the answer, if present
         const yesNoMatch = rawAnswer.match(/^(Yes|No),?/i);
+        let extractedYesNo: string | null = null;
         if (yesNoMatch) {
-          setYesNo(yesNoMatch[1]);
-          // Remove "Yes" or "No" (and any following comma) from the raw answer
+          extractedYesNo = yesNoMatch[1];
           rawAnswer = rawAnswer.substring(yesNoMatch[0].length).trim();
-        } else {
-          setYesNo(null);
         }
 
+        setYesNo(extractedYesNo);
+
+        // Split the answer into points
+        const splitPoints = rawAnswer.split('\n').filter(line => line.trim() !== '');
+
+        setPoints(splitPoints);
         setAnswer(rawAnswer);
 
         toast({
@@ -63,7 +74,6 @@ export default function Home() {
         });
       } else {
         setAnswer("No answer available.");
-        setYesNo(null);
         toast({
           title: "Information",
           description: "No answer was generated.",
@@ -72,16 +82,16 @@ export default function Home() {
     } catch (error: any) {
       console.error("Error generating answer:", error);
       setAnswer("Error generating answer. Please try again.");
-      setYesNo(null);
       toast({
         title: "Error",
         description:
           error?.message || "Failed to generate answer. Please try again.",
       });
     } finally {
-      setLoading(false); // Set loading state to false after operation completes
+      setLoading(false);
     }
   };
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
@@ -136,18 +146,18 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               {yesNo && <p className="mb-4 font-bold">{yesNo}</p>}
-              {answer.split('\n\n').map((paragraph, index) => (
-                <div key={index} className="mb-4">
-                  {paragraph.split('\n').map((line, lineIndex) => (
-                    <React.Fragment key={lineIndex}>
-                      {lineIndex === 0 && <span className="font-semibold">{line.match(/^\d+\.\s*(.*)/)?.[1] ? line.match(/^\d+\.\s*(.*)/)?.[0] : ''}</span>}
-                      {lineIndex === 0 && <br />}
-                      <span>{line.match(/^\d+\.\s*(.*)/)?.[1] ? line.replace(/^\d+\.\s*/, '') : line}</span>
-                      <br />
-                    </React.Fragment>
+
+              {introText && <p className="mb-4">{introText}</p>}
+
+              {points.length > 0 && (
+                <div>
+                  {points.map((point, index) => (
+                    <div key={index} className="mb-2">
+                      {point}
+                    </div>
                   ))}
                 </div>
-              ))}
+              )}
             </CardContent>
           </Card>
         )}
@@ -159,4 +169,3 @@ export default function Home() {
     </div>
   );
 }
-
