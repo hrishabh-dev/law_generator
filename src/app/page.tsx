@@ -52,7 +52,19 @@ export default function Home() {
 
       try {
         // Attempt to parse the raw answer as JSON
-        const parsedAnswer = JSON.parse(rawAnswer);
+        let parsedAnswer;
+        try {
+          parsedAnswer = JSON.parse(rawAnswer);
+        } catch (parseError) {
+          // If it's not a JSON, consider the entire rawAnswer as a single description.
+          console.log("Raw answer:", rawAnswer);
+          parsedAnswer = {
+            introText: null,
+            points: [],
+            descriptions: [rawAnswer], // Wrap rawAnswer in an array
+          };
+        }
+
         setIntroText(parsedAnswer.introText || '');
   
         // Ensure points and descriptions are arrays before mapping
