@@ -18,6 +18,9 @@ export type GenerateAnswerInput = z.infer<typeof GenerateAnswerInputSchema>;
 
 const GenerateAnswerOutputSchema = z.object({
   answer: z.string().describe('The AI generated answer to the question.'),
+  introText: z.string().optional().describe('Introductory text to the answer.'),
+  points: z.array(z.string()).optional().describe('Key points related to the question.'),
+  descriptions: z.array(z.string()).optional().describe('Descriptions for each key point.'),
 });
 export type GenerateAnswerOutput = z.infer<typeof GenerateAnswerOutputSchema>;
 
@@ -36,13 +39,18 @@ const prompt = ai.definePrompt({
   output: {
     schema: z.object({
       answer: z.string().describe('The AI generated answer to the question.'),
+      introText: z.string().optional().describe('Introductory text to the answer.'),
+      points: z.array(z.string()).optional().describe('Key points related to the question.'),
+      descriptions: z.array(z.string()).optional().describe('Descriptions for each key point.'),
     }),
   },
-  prompt: `You are an expert in CA Inter Law. Please answer the following question clearly and concisely, presenting the information in a human-like way. Structure your response to extract introductory text and key points separately, suitable for display above and within a table, respectively.
+  prompt: `You are an expert in CA Inter Law. Please provide a clear and concise answer to the following question. Structure your response into an engaging introduction, key points, and detailed descriptions for each point. Your response must contain the following:
 
-First, provide an engaging introduction to the answer, setting the context or background. This part should not be numbered.
+1.  **Introductory Text**: Start with an engaging introduction to the answer, setting the context or background. This part should not be numbered and should be displayed above the table.
+2.  **Key Points**: Identify and extract the key points related to the question.
+3.  **Descriptions**: Provide a detailed description for each key point.
 
-Then, identify and extract the key points related to the question. Present each point as a numbered item suitable for a table, in the format "Point: [point_number]" and "Description: [point_description]". Ensure that each key point is concise and can be displayed in a tabular format.
+The key points and descriptions will be presented in a table.
 
 Question: {{{question}}}
 
@@ -51,6 +59,11 @@ Context: {{{context}}}
 {{~/if}}
 
 Answer:
+{
+  "introText": "<introductory_text>",
+  "points": ["1", "2", "3", ...],
+  "descriptions": ["description_for_point_1", "description_for_point_2", "description_for_point_3", ...]
+}
 `,
 });
 

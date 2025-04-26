@@ -50,29 +50,29 @@ export default function Home() {
       const result = await generateAnswer({ question: question, context: context });
       const rawAnswer = result?.answer || "No answer available.";
 
-      // Splitting the raw answer into intro text and answer points
-      const lines = rawAnswer.split('\n');
-      let extractedIntroText = '';
-      const extractedAnswerPoints: { point: string; description: string }[] = [];
-
-      let inIntro = true;
-      for (const line of lines) {
-          if (line.startsWith('Point:')) {
-              inIntro = false;
-              const pointNumber = line.split(':')[1]?.trim() || '';
-              const descriptionLine = lines[lines.indexOf(line) + 1];
-              if (descriptionLine && descriptionLine.startsWith('Description:')) {
-                  const description = descriptionLine.split(':')[1]?.trim() || '';
-                  extractedAnswerPoints.push({ point: pointNumber, description: description });
-              }
-          } else if (inIntro) {
-              extractedIntroText += line + '\n';
-          }
+      try {
+        // Attempt to parse the raw answer as JSON
+        const parsedAnswer = JSON.parse(rawAnswer);
+        setIntroText(parsedAnswer.introText || '');
+  
+        // Ensure points and descriptions are arrays before mapping
+        const points = Array.isArray(parsedAnswer.points) ? parsedAnswer.points : [];
+        const descriptions = Array.isArray(parsedAnswer.descriptions) ? parsedAnswer.descriptions : [];
+  
+        // Combine points and descriptions into answerPoints array
+        const combinedAnswerPoints = points.map((point, index) => ({
+          point: point,
+          description: descriptions[index] || 'No description available.',
+        }));
+  
+        setAnswerPoints(combinedAnswerPoints);
+        setAnswer(rawAnswer); // Keep raw answer for debugging/future use
+      } catch (parseError) {
+        console.error("Error parsing JSON answer:", parseError);
+        setIntroText("Error parsing answer.");
+        setAnswerPoints([]);
+        setAnswer("Error parsing JSON answer.");
       }
-
-      setIntroText(extractedIntroText.trim());
-      setAnswerPoints(extractedAnswerPoints);
-      setAnswer(rawAnswer); // Keep raw answer for debugging/future use
 
       toast({
         title: "Success",
