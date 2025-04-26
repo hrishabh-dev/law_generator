@@ -60,8 +60,8 @@ export default function Home() {
         const descriptions = Array.isArray(parsedAnswer.descriptions) ? parsedAnswer.descriptions : [];
   
         // Combine points and descriptions into answerPoints array
-        const combinedAnswerPoints = points.map((point, index) => ({
-          point: point,
+        const combinedAnswerPoints = points.map((_, index) => ({
+          point: String(index + 1),
           description: descriptions[index] || 'No description available.',
         }));
   
@@ -148,7 +148,7 @@ export default function Home() {
                 <TableBody>
                   {answerPoints.map((item, index) => (
                     <TableRow key={index}>
-                      <TableCell className="font-medium">{index + 1}</TableCell>
+                      <TableCell className="font-medium">{item.point}</TableCell>
                       <TableCell>{item.description}</TableCell>
                     </TableRow>
                   ))}
@@ -164,4 +164,3 @@ export default function Home() {
     </div>
   );
 }
-
