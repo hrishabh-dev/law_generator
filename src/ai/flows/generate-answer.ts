@@ -34,7 +34,7 @@ const prompt = ai.definePrompt({
       answer: z.string().describe('The AI generated answer to the question, formatted in numbered points.'),
     }),
   },
-  prompt: `You are an expert in CA Inter Law. Please provide a comprehensive answer to the following question. Format the answer as a numbered list, with each point on a new line. If the question implies a "Yes" or "No" answer, start with that before the numbered list.
+  prompt: `You are an expert in CA Inter Law. Please provide a comprehensive answer to the following question. Format the answer as a numbered list, with each point on a new line.  Do not include any introductory or concluding sentences. Only include the numbered points.
 
 Question: {{{question}}}
 

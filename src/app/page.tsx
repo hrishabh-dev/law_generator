@@ -8,7 +8,6 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 export default function Home() {
   const [question, setQuestion] = useState("");
@@ -16,10 +15,6 @@ export default function Home() {
   const [answer, setAnswer] = useState<string | null>(null);
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [yesNo, setYesNo] = useState<string | null>(null);
-  const [introText, setIntroText] = useState<string>('');
-  const [points, setPoints] = useState<string[]>([]);
-
 
   const handleQuestionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -42,32 +37,12 @@ export default function Home() {
 
     setLoading(true);
     setAnswer(null);
-    setYesNo(null);
-    setIntroText('');
-    setPoints([]);
 
     try {
       const result = await generateAnswer({ question: question, context: context });
 
       if (result && result.answer) {
-        let rawAnswer = result.answer;
-
-        // Extract "Yes" or "No" from the beginning of the answer, if present
-        const yesNoMatch = rawAnswer.match(/^(Yes|No),?/i);
-        let extractedYesNo: string | null = null;
-        if (yesNoMatch) {
-          extractedYesNo = yesNoMatch[1];
-          rawAnswer = rawAnswer.substring(yesNoMatch[0].length).trim();
-        }
-
-        setYesNo(extractedYesNo);
-
-        // Split the answer into points
-        const splitPoints = rawAnswer.split('\n').filter(line => line.trim() !== '');
-
-        setPoints(splitPoints);
-        setAnswer(rawAnswer);
-
+        setAnswer(result.answer);
         toast({
           title: "Success",
           description: "Answer generated successfully.",
@@ -91,7 +66,6 @@ export default function Home() {
       setLoading(false);
     }
   };
-
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
@@ -145,19 +119,11 @@ export default function Home() {
               <h2 className="text-lg font-semibold">Answer</h2>
             </CardHeader>
             <CardContent>
-              {yesNo && <p className="mb-4 font-bold">{yesNo}</p>}
-
-              {introText && <p className="mb-4">{introText}</p>}
-
-              {points.length > 0 && (
-                <div>
-                  {points.map((point, index) => (
-                    <div key={index} className="mb-2">
-                      {point}
-                    </div>
-                  ))}
-                </div>
-              )}
+              <ol className="list-decimal pl-5">
+                {answer.split('\n').map((point, index) => (
+                  <li key={index}>{point}</li>
+                ))}
+              </ol>
             </CardContent>
           </Card>
         )}
