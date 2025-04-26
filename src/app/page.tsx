@@ -53,7 +53,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
+    <div className="flex flex-col items-center justify-center min-h-screen py-2 deep-blue-theme">
       <Toaster />
       <h1 className="text-4xl font-bold mb-4 text-primary">Law Ace AI</h1>
       <p className="text-muted-foreground mb-8">
@@ -105,6 +105,9 @@ export default function Home() {
           </Card>
         )}
       </div>
+        <p className="mt-8 text-muted-foreground">
+          Contact: <a href="mailto:hrishabh068@gmail.com">hrishabh068@gmail.com</a>
+        </p>
     </div>
   );
 }
