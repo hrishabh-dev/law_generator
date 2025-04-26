@@ -15,7 +15,6 @@ export default function Home() {
   const [answer, setAnswer] = useState<string | null>(null);
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [yesNo, setYesNo] = useState<string | null>(null);
 
   const handleQuestionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -38,7 +37,6 @@ export default function Home() {
 
     setLoading(true);
     setAnswer(null);
-    setYesNo(null);
 
     try {
       const result = await generateAnswer({ question: question, context: context });
@@ -122,12 +120,17 @@ export default function Home() {
               <h2 className="text-lg font-semibold">Answer</h2>
             </CardHeader>
             <CardContent>
-              {yesNo && <p><strong>{yesNo}</strong></p>}
-              <ol className="list-decimal pl-5">
-                {answer.split('\n').map((point, index) => (
-                  <li key={index}>{point}</li>
-                ))}
-              </ol>
+              {answer.split('\n').map((point, index) => (
+                <div key={index}>
+                  {point && (
+                    point.startsWith('**') ? (
+                      <p key={index} dangerouslySetInnerHTML={{ __html: point }} />
+                    ) : (
+                      <p key={index}>{point}</p>
+                    )
+                  )}
+                </div>
+              ))}
             </CardContent>
           </Card>
         )}
