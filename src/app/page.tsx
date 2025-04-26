@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { generateAnswer } from "@/ai/flows/generate-answer";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,6 @@ export default function Home() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [yesNo, setYesNo] = useState<string | null>(null);
-  const [introText, setIntroText] = useState("");
 
   const handleQuestionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -40,25 +39,12 @@ export default function Home() {
     setLoading(true);
     setAnswer(null);
     setYesNo(null);
-    setIntroText("");
 
     try {
       const result = await generateAnswer({ question: question, context: context });
 
       if (result && result.answer) {
-        // Detect "Yes" or "No" at the beginning of the answer
-        let rawAnswer = result.answer;
-        const yesNoMatch = rawAnswer.match(/^(Yes|No)[\.,]?\s*/i);
-
-        if (yesNoMatch) {
-          setYesNo(yesNoMatch[1]);
-          // Remove "Yes" or "No" (and any following comma) from the raw answer
-          rawAnswer = rawAnswer.substring(yesNoMatch[0].length).trim();
-        } else {
-          setYesNo(null);
-        }
-
-        setAnswer(rawAnswer);
+        setAnswer(result.answer);
 
         toast({
           title: "Success",
