@@ -13,7 +13,7 @@ const GenerateAnswerInputSchema = z.object({
 export type GenerateAnswerInput = z.infer<typeof GenerateAnswerInputSchema>;
 
 const GenerateAnswerOutputSchema = z.object({
-  answer: z.string().describe('The AI generated answer to the question, formatted in points with headings and subheadings in bold characters.'),
+  answer: z.string().describe('The AI generated answer to the question, formatted with HTML bold tags for headings and line breaks between points.'),
 });
 export type GenerateAnswerOutput = z.infer<typeof GenerateAnswerOutputSchema>;
 
@@ -31,10 +31,10 @@ const prompt = ai.definePrompt({
   },
   output: {
     schema: z.object({
-      answer: z.string().describe('The AI generated answer to the question, formatted in numbered points, each on a new line.'),
+      answer: z.string().describe('The AI generated answer to the question, formatted with HTML bold tags for headings and line breaks between points.'),
     }),
   },
-  prompt: `You are an expert in CA Inter Law. Please provide a comprehensive answer to the following question in a clear and structured manner. Use numbered points to present the answer, with headings and subheadings in &lt;b&gt;bold characters&lt;/b&gt; for better readability. Each point should start on a new line.
+  prompt: `You are an expert in CA Inter Law. Please provide a comprehensive answer to the following question in a clear and structured manner. Format the answer as a series of points, each on a new line.  Use HTML &lt;b&gt;bold&lt;/b&gt; tags for headings and subheadings within each point. Each point should be on a new line.
 
 Question: {{{question}}}
 
