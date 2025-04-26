@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { generateAnswer } from "@/ai/flows/generate-answer";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -120,17 +120,12 @@ export default function Home() {
               <h2 className="text-lg font-semibold">Answer</h2>
             </CardHeader>
             <CardContent>
-              {answer.split('\n').map((point, index) => (
-                <div key={index}>
-                  {point && (
-                    point.startsWith('**') ? (
-                      <p key={index} dangerouslySetInnerHTML={{ __html: point }} />
-                    ) : (
-                      <p key={index}>{point}</p>
-                    )
-                  )}
-                </div>
-              ))}
+              {answer.split('\n').map((point, index) => {
+                if (!point) return null; // Skip empty lines
+                return (
+                  <div key={index} dangerouslySetInnerHTML={{ __html: point }} />
+                );
+              })}
             </CardContent>
           </Card>
         )}

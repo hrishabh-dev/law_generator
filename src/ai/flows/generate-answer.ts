@@ -31,19 +31,19 @@ const prompt = ai.definePrompt({
   },
   output: {
     schema: z.object({
-      answer: z.string().describe('The AI generated answer to the question, formatted in points with headings and subheadings in bold characters.'),
+      answer: z.string().describe('The AI generated answer to the question, formatted in numbered points, each on a new line.'),
     }),
   },
-  prompt: `You are an expert in CA Inter Law. Please provide a comprehensive answer to the following question in a clear and structured manner. Use points to present the answer, with headings and subheadings in bold characters for better readability.
-  
-  Question: {{{question}}}
-  
-  {{~#if context}}
-  Context: {{{context}}}
-  {{~/if}}
-  
-  Answer:
-  `,
+  prompt: `You are an expert in CA Inter Law. Please provide a comprehensive answer to the following question in a clear and structured manner. Use numbered points to present the answer, with headings and subheadings in &lt;b&gt;bold characters&lt;/b&gt; for better readability. Each point should start on a new line.
+
+Question: {{{question}}}
+
+{{~#if context}}
+Context: {{{context}}}
+{{~/if}}
+
+Answer:
+`,
 });
 
 const generateAnswerFlow = ai.defineFlow<
@@ -57,4 +57,3 @@ const generateAnswerFlow = ai.defineFlow<
   const {output} = await prompt(input);
   return output!;
 });
-
