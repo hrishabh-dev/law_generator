@@ -39,7 +39,18 @@ const prompt = ai.definePrompt({
       answer: z.string().describe('The AI generated answer to the question.'),
     }),
   },
-  prompt: `You are an expert in CA Inter Law. Please answer the following question clearly and concisely.  Format the answer as a numbered list with digits.\n\nQuestion: {{{question}}}\n\n{{~#if context}}\nContext: {{{context}}}\n{{~/if}}\n\nAnswer:`,
+  prompt: `You are an expert in CA Inter Law. Please answer the following question clearly and concisely, presenting the information in a human-like way.
+
+Give a detailed answer, broken down into easily understandable points. Each point should be on a new line, formatted with a numbered index (e.g., "1. [Point 1]").
+
+Question: {{{question}}}
+
+{{~#if context}}
+Context: {{{context}}}
+{{~/if}}
+
+Answer:
+`,
 });
 
 const generateAnswerFlow = ai.defineFlow<
