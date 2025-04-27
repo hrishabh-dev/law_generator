@@ -1,7 +1,5 @@
 # Law Ace AI
 
-![Law Ace AI Logo](docs/images/logo.png)
-
 Law Ace AI is an AI-powered tool specifically designed to assist in answering questions related to CA Inter Law. It leverages advanced artificial intelligence to provide accurate, relevant, and insightful answers to users' queries, helping students and professionals save time and improve their understanding.
 
 ## Core Features
